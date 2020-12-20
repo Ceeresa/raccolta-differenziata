@@ -33,7 +33,7 @@ plugins:
 
 pages_list:
   - name: Calendario
-    url: /
+    url: ./
 
 
 # Exclude from processing.
