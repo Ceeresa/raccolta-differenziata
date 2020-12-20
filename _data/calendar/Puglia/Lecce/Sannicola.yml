@@ -1,0 +1,19 @@
+url: 'https://www.arolecce6.it'
+calendar:
+  - name: Organico
+    week_days: [1, 3, 5]
+  - name: Plastica e Metalli
+    week_days: [2]
+  - name: Carta
+    week_days: [4]
+  - name: Vetro
+    week_days: [4]
+    week_periods:
+      - from: 01/06
+        to: 30/09
+        week_of_the_month: [1, 2, 3, 4, 5]
+      - from: 01/10
+        to: 31/05
+        week_of_the_month: [1, 3, 5]
+  - name: Non Riciclabile
+    week_days: [6]
