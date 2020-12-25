@@ -18,19 +18,19 @@ additional_scripts:
                 <div class="form-group col-md-4">
                     <label for="regione">Regione</label>
                     <select class="form-control" id="regione" name="regione">
-                        <option value=""></option>
+                        <option value="" label="Seleziona la regione"></option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="provincia">Provincia</label>
                     <select class="form-control" id="provincia" name="provincia">
-                        <option value=""></option>
+                        <option value="" label="Seleziona la provincia"></option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="comune">Comune</label>
                     <select class="form-control" id="comune" name="comune">
-                        <option value=""></option>
+                        <option value="" label="Seleziona il comune"></option>
                     </select>
                 </div>
             </div>
