@@ -75,6 +75,11 @@ function resetComuneField() {
   $comune.find("option[value!='']").remove();
 }
 
+/**
+ * Create date by period.
+ * @param {string} period The period in the MM/DD format.
+ * @returns Returns the date by the given format.
+ */
 function createDateByPeriod(period) {
   const year = TODAY_DATE.getFullYear();
   const splittedPeriod = period.split("/");
@@ -83,6 +88,11 @@ function createDateByPeriod(period) {
   return new Date(year, month, day);
 }
 
+/**
+ * Create date by period, setting it to the previous millisecond of the following date.
+ * @param {string} period The period in the MM/DD format.
+ * @returns Returns the date by the given format.
+ */
 function createToDateByPeriod(period) {
   let toDate = createDateByPeriod(period);
   toDate.setDate(toDate.getDate() + 1);
