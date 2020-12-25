@@ -2,13 +2,13 @@ const SPINNER_ID = "#spinner"
 const TABLE_ID = "#raccolta-differenziata-calendar";
 const SPINNER_BACKDROP_ID = "#spinner-backdrop"
 const WEEK_DAYS = [
+  "Domenica",
   "Lunedì",
   "Martedì",
   "Mercoledì",
   "Giovedì",
   "Venerdì",
-  "Sabato",
-  "Domenica"
+  "Sabato"
 ];
 const TODAY_DATE = new Date();
 
@@ -165,8 +165,8 @@ function getRaccoltaFromDay(calendarData, weekDay, currentDate) {
 
 /**
  * Get the week day by the index.
- * @param {int} i The index
- * @returns Returns the week day as string by the given index.
+ * @param {int} i The day index.
+ * @returns Returns the week day as string by the given day index.
  */
 function getWeekDayByIndex(index) {
   return WEEK_DAYS[index];
@@ -194,7 +194,7 @@ function populateTable(regione, provincia, comune) {
   // Add a row for each week day (let's start with 1 and from Monday)
   for (let currentDate = new Date(TODAY_DATE); currentDate.getTime() <= lastDay.getTime(); currentDate.setDate(currentDate.getDate() + 1)) {
     const day = currentDate.getDay();
-    let raccolta = getRaccoltaFromDay(calendarData, day + 1, currentDate);
+    let raccolta = getRaccoltaFromDay(calendarData, day, currentDate);
     let weekDay = getWeekDayByIndex(day);
     weekDay += ' ' + currentDate.getDate() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear();
 
