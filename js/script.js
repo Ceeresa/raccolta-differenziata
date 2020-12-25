@@ -221,7 +221,8 @@ function populateTable(regione, provincia, comune) {
     $('<td>').append(
       $('<a>', {
         href: data.url,
-        text: data.url
+        text: data.url,
+        target: '_blank'
       })
     )])
   );
