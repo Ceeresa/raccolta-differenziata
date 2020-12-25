@@ -10,6 +10,7 @@ const WEEK_DAYS = [
   "Sabato",
   "Domenica"
 ];
+const TODAY_DATE = new Date();
 
 
 /**
@@ -74,18 +75,79 @@ function resetComuneField() {
   $comune.find("option[value!='']").remove();
 }
 
+function createDateByPeriod(period) {
+  const year = TODAY_DATE.getFullYear();
+  const splittedPeriod = period.split("/");
+  const month = parseInt(splittedPeriod[1]) - 1;
+  const day = parseInt(splittedPeriod[0]);
+  return new Date(year, month, day);
+}
+
+function createToDateByPeriod(period) {
+  let toDate = createDateByPeriod(period);
+  toDate.setDate(toDate.getDate() + 1);
+  toDate.setMilliseconds(toDate.getMilliseconds() - 1);
+  return toDate;
+}
+
+/**
+ * Returns the week number for the given week day until untilDate.
+ * @param {int} weekDay The week day. 
+ * @param {Date} untilDate The date until calculate the week index.
+ */
+function calculateCurrentWeekIndex(weekDay, untilDate) {
+  let date = new Date(untilDate.getTime());
+  date.setDate(1);
+  let weekIndex = 0;
+  for (; date.getTime() <= untilDate.getTime(); date.setDate(date.getDate() + 1)) {
+    let day = date.getDay() + 1;
+    if (day === weekDay) {
+      weekIndex++;
+    }
+  }
+
+  return weekIndex;
+}
+
 /**
  * Get the raccolta from day.
  * @param {object} calendarData The calendar data. 
  * @param {int} weekDay The week day.
+ * @param {date} currentDate The current date.
  * @returns Returns an array with all the raccolta for the given day.
  */
-function getRaccoltaFromDay(calendarData, weekDay) {
+function getRaccoltaFromDay(calendarData, weekDay, currentDate) {
   let output = [];
   for (let i = 0; i < calendarData.length; i++) {
     let currentData = calendarData[i];
     if (currentData.week_days.includes(weekDay)) {
-      output.push(currentData.name);
+
+      if (currentData.week_periods) {
+        // Check if the current week period is correct
+        let weekPeriods = currentData.week_periods;
+        for (let j = 0; j < weekPeriods.length; j++) {
+          let weekPeriod = weekPeriods[j];
+          let fromDate = createDateByPeriod(weekPeriod.from);
+          let toDate = createToDateByPeriod(weekPeriod.to);
+
+          // In the case the period is across two years, add a year to the to date
+          if (toDate.getTime() <= fromDate.getTime()) {
+            toDate.setFullYear(toDate.getFullYear() + 1);
+          }
+
+          if (TODAY_DATE.getTime() >= fromDate.getTime() && TODAY_DATE.getTime() <= toDate.getTime()) {
+            console.debug('The current period is', weekPeriod, weekDay);
+            // Calculate the week index for each week days
+            let weekIndex = calculateCurrentWeekIndex(weekDay, currentDate);
+            console.debug('weekIndex is', weekIndex);
+            if (weekPeriod.week_index.includes(weekIndex)) {
+              output.push(currentData.name);
+            }
+          }
+        }
+      } else {
+        output.push(currentData.name);
+      }
     }
   }
   return output;
@@ -97,7 +159,7 @@ function getRaccoltaFromDay(calendarData, weekDay) {
  * @returns Returns the week day as string by the given index.
  */
 function getWeekDayByIndex(index) {
-  return WEEK_DAYS[index - 1];
+  return WEEK_DAYS[index];
 }
 
 /**
@@ -108,22 +170,26 @@ function getWeekDayByIndex(index) {
  */
 function populateTable(regione, provincia, comune) {
   let data = calendar[regione][provincia][comune];
-  console.log('Data for the current comune', data);
+  console.debug('Data for the current comune', data);
   let calendarData = data.calendar;
   // Remove old data
   let $table = $(TABLE_ID);
   $table.empty();
-  const today = new Date();
-  const tomorrow = new Date(today);
+  const tomorrow = new Date(TODAY_DATE);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowDay = tomorrow.getDay();
+  const lastDay = new Date(TODAY_DATE);
+  lastDay.setDate(TODAY_DATE.getDate() + 6);
 
   // Add a row for each week day (let's start with 1 and from Monday)
-  for (let i = 1; i < WEEK_DAYS.length + 1; i++) {
-    let raccolta = getRaccoltaFromDay(calendarData, i);
-    let weekDay = getWeekDayByIndex(i);
+  for (let currentDate = new Date(TODAY_DATE); currentDate.getTime() <= lastDay.getTime(); currentDate.setDate(currentDate.getDate() + 1)) {
+    const day = currentDate.getDay();
+    let raccolta = getRaccoltaFromDay(calendarData, day + 1, currentDate);
+    let weekDay = getWeekDayByIndex(day);
+    weekDay += ' ' + currentDate.getDate() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear();
+
     let classToAdd = '';
-    if (i === tomorrowDay) {
+    if (day === tomorrowDay) {
       classToAdd = 'table-active';
       weekDay += ' (domani)';
     }
@@ -137,6 +203,7 @@ function populateTable(regione, provincia, comune) {
     );
   }
 
+  // Add more info link
   $table.append(
     $('<tr>').append([$('<th>', {
       text: 'Maggiori informazioni'
