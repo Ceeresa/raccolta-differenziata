@@ -8,7 +8,7 @@ jobs:
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2.3.2
-    - name: 💎 Get ruby
+    - name: 💎 Get ruby and install dependencies
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.7'
