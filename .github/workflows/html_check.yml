@@ -11,7 +11,7 @@ jobs:
     - name: 💎 Get ruby and install dependencies
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: '3.4'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     
     - name: 🔨 Build Project
